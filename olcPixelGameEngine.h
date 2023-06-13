@@ -536,13 +536,13 @@ namespace X11 {
 
 #if defined(OLC_PLATFORM_GLUT)
 #if defined(__linux__)
-#include <GL/glut.h>
 #include <GL/freeglut_ext.h>
+#include <GL/glut.h>
 #endif
 #if defined(__APPLE__)
 #include <GLUT/glut.h>
-#include <objc/message.h>
 #include <objc/NSObjCRuntime.h>
+#include <objc/message.h>
 #endif
 #endif
 #endif
@@ -4705,8 +4705,8 @@ public:
 #if defined(OLC_GFX_OPENGL10)
 
 #if defined(OLC_PLATFORM_WINAPI)
-#include <dwmapi.h>
 #include <GL/gl.h>
+#include <dwmapi.h>
 #if !defined(__MINGW32__)
 #pragma comment(lib, "Dwmapi.lib")
 #endif
@@ -4884,7 +4884,7 @@ public:
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    void SetDecalMode(const olc::DecalMode &mode) {
+    void SetDecalMode(const olc::DecalMode &mode) override {
         if (mode != nDecalMode) {
             switch (mode) {
             case olc::DecalMode::NORMAL:
