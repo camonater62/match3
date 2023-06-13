@@ -10,14 +10,14 @@ public:
 private:
     const static int nGridWidth = 10;
     const static int nGridHeight = 10;
-    int nCellSize = 160;
+    int nCellSize = 80;
 
     int nCursorX = 0;
     int nCursorY = 0;
 
     olc::Sprite *grid[nGridHeight][nGridWidth] = { 0 };
 
-    const static int NUM_FRUITS = 18;
+    const static int NUM_FRUITS = 7;
     olc::Sprite **fruits = nullptr;
 
     void ReadInput() {
@@ -34,13 +34,13 @@ private:
             nCursorY++;
         }
 
-        if (GetKey(olc::Key::J).bPressed && nCursorX > 1) {
+        if (GetKey(olc::Key::J).bPressed && nCursorX > 0) {
             std::swap(grid[nCursorY][nCursorX], grid[nCursorY][nCursorX - 1]);
         }
         if (GetKey(olc::Key::L).bPressed && nCursorX < nGridWidth - 1) {
             std::swap(grid[nCursorY][nCursorX], grid[nCursorY][nCursorX + 1]);
         }
-        if (GetKey(olc::Key::I).bPressed && nCursorY > 1) {
+        if (GetKey(olc::Key::I).bPressed && nCursorY > 0) {
             std::swap(grid[nCursorY][nCursorX], grid[nCursorY - 1][nCursorX]);
         }
         if (GetKey(olc::Key::K).bPressed && nCursorY < nGridHeight - 1) {
@@ -89,6 +89,7 @@ private:
     }
 
     void DrawGrid() {
+        SetPixelMode(olc::Pixel::MASK);
         for (int y = 0; y < nGridHeight; y++) {
             for (int x = 0; x < nGridWidth; x++) {
                 olc::Sprite *color = grid[y][x];
@@ -97,21 +98,33 @@ private:
                 }
             }
         }
+        SetPixelMode(olc::Pixel::NORMAL);
     }
 
     void DrawCursor() {
-        DrawRect((nCursorX + 1) * nCellSize, nCursorY * nCellSize, nCellSize, nCellSize, olc::RED);
-        DrawRect(nCursorX * nCellSize, (nCursorY + 1) * nCellSize, nCellSize, nCellSize, olc::RED);
-        DrawRect((nCursorX - 1) * nCellSize, nCursorY * nCellSize, nCellSize, nCellSize, olc::RED);
-        DrawRect(nCursorX * nCellSize, (nCursorY - 1) * nCellSize, nCellSize, nCellSize, olc::RED);
-        DrawRect(nCursorX * nCellSize, nCursorY * nCellSize, nCellSize, nCellSize, olc::YELLOW);
+        FillRect(
+            (nCursorX + 1) * nCellSize, nCursorY * nCellSize, nCellSize, nCellSize, olc::DARK_RED);
+        FillRect(
+            nCursorX * nCellSize, (nCursorY + 1) * nCellSize, nCellSize, nCellSize, olc::DARK_RED);
+        FillRect(
+            (nCursorX - 1) * nCellSize, nCursorY * nCellSize, nCellSize, nCellSize, olc::DARK_RED);
+        FillRect(
+            nCursorX * nCellSize, (nCursorY - 1) * nCellSize, nCellSize, nCellSize, olc::DARK_RED);
+        FillRect(
+            nCursorX * nCellSize, nCursorY * nCellSize, nCellSize, nCellSize, olc::DARK_YELLOW);
     }
 
     void InitFruits() {
         fruits = new olc::Sprite *[NUM_FRUITS];
-        std::string fruit_names[NUM_FRUITS] = { "Apple", "Avocado", "Banana", "Blackberry",
-            "Cherry", "Coconut", "Fig", "Grapes", "Kiwi", "Lemon", "Mango", "Orange", "Peach",
-            "Pear", "Pineapple", "Plum", "Strawberry", "Watermelon" };
+        std::string fruit_names[NUM_FRUITS] = {
+            "Apple",
+            "Banana",
+            "Blackberry",
+            "Cherry",
+            "Coconut",
+            "Orange",
+            "Pear",
+        };
         for (int i = 0; i < NUM_FRUITS; i++) {
             std::string path = "Assets/" + fruit_names[i] + ".png";
             fruits[i] = new olc::Sprite(path);
@@ -155,7 +168,7 @@ public:
 
 int main() {
     Match3 game;
-    if (game.Construct(1600, 1600, 1, 1, false, true)) {
+    if (game.Construct(800, 800, 1, 1, false, true)) {
         game.Start();
     }
     return 0;
