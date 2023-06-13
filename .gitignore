@@ -1,1 +1,3 @@
 match
+.vscode/
+*.zip

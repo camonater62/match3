@@ -5,7 +5,7 @@ CC = clang++
 WCC = x86_64-w64-mingw32-g++
 EMCC = em++
 
-CFLAGS = -O2 -std=c++17 
+CFLAGS = -O2 -std=c++17 -g 
 WFLAGS = -O2 -std=c++17 -static
 EMFLAGS = -std=c++17 -O2 -s ALLOW_MEMORY_GROWTH=1 -s MAX_WEBGL_VERSION=2 -s MIN_WEBGL_VERSION=2 -s USE_LIBPNG=1 -s USE_SDL_MIXER=2
 
