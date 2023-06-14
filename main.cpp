@@ -65,27 +65,48 @@ private:
         }
     }
 
-    void CheckMatches() {
+    bool HasMatch(int x1, int y1, int x2, int y2) {
+        std::swap(grid[y1][x1], grid[y2][x2]);
+        bool match = CheckMatches(false);
+        std::swap(grid[y1][x1], grid[y2][x2]);
+        return match;
+    }
+
+    bool CheckMatches(bool clear) {
         // Check for horizontal matches
+        bool match = false;
         for (int y = 0; y < nGridHeight; y++) {
-            for (int x = 0; x < nGridWidth - 2; x++) {
-                if (grid[y][x] == grid[y][x + 1] && grid[y][x] == grid[y][x + 2]) {
-                    grid[y][x] = nullptr;
-                    grid[y][x + 1] = nullptr;
-                    grid[y][x + 2] = nullptr;
+            for (int x = 0; x < nGridWidth; x++) {
+                int nMatch = 0;
+                while (x + nMatch < nGridWidth && grid[y][x + nMatch] == grid[y][x]) {
+                    nMatch++;
+                }
+                if (nMatch >= 3) {
+                    for (int i = 0; clear && i < nMatch; i++) {
+                        grid[y][x + i] = nullptr;
+                    }
+                    x += nMatch - 1;
+                    match = true;
                 }
             }
         }
         // Check for vertical matches
         for (int y = 0; y < nGridHeight - 2; y++) {
             for (int x = 0; x < nGridWidth; x++) {
-                if (grid[y][x] == grid[y + 1][x] && grid[y][x] == grid[y + 2][x]) {
-                    grid[y][x] = nullptr;
-                    grid[y + 1][x] = nullptr;
-                    grid[y + 2][x] = nullptr;
+                int nMatch = 0;
+                while (y + nMatch < nGridHeight && grid[y + nMatch][x] == grid[y][x]) {
+                    nMatch++;
+                }
+                if (nMatch >= 3) {
+                    for (int i = 0; clear && i < nMatch; i++) {
+                        grid[y + i][x] = nullptr;
+                    }
+                    y += nMatch - 1;
+                    match = true;
                 }
             }
         }
+        return match;
     }
 
     void DrawGrid() {
@@ -136,6 +157,19 @@ private:
         }
     }
 
+    void HighlightMatches() {
+        for (int y = 0; y < nGridHeight; y++) {
+            for (int x = 0; x < nGridWidth; x++) {
+                if ((x > 0 && HasMatch(x, y, x - 1, y))
+                    || (x < nGridWidth - 1 && HasMatch(x, y, x + 1, y))
+                    || (y > 0 && HasMatch(x, y, x, y - 1))
+                    || (y < nGridHeight - 1 && HasMatch(x, y, x, y + 1))) {
+                    FillRect(x * nCellSize, y * nCellSize, nCellSize, nCellSize, olc::DARK_GREEN);
+                }
+            }
+        }
+    }
+
 public:
     bool OnUserCreate() override {
         srand(time(NULL));
@@ -150,8 +184,9 @@ public:
 
         ReadInput();
         ApplyGravity();
-        CheckMatches();
+        CheckMatches(true);
         DrawCursor();
+        HighlightMatches();
         DrawGrid();
 
         return true;
